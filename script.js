@@ -575,6 +575,56 @@ const FOOD_DATABASE = [
     name: "Instant Coffee with Milk & Sugar",
     cal: 85, protein: 2.2, fat: 2.1, satFat: 1.3, unsatFat: 0.7, transFat: 0,
     carbs: 14.0, fiber: 0, sugars: 13.1, netCarbs: 14.0, sodium: 35, potassium: 110, cholesterol: 7, calcium: 78, iron: 0.1
+  },
+  {
+    name: "Chicken Breast (Cooked, Skinless)",
+    cal: 165, protein: 31.0, fat: 3.6, satFat: 1.0, unsatFat: 2.3, transFat: 0,
+    carbs: 0.0, fiber: 0, sugars: 0.0, netCarbs: 0.0, sodium: 74, potassium: 256, cholesterol: 85, calcium: 15, iron: 1.0
+  },
+  {
+    name: "Whole Egg (Cooked, Hard-Boiled)",
+    cal: 155, protein: 12.6, fat: 10.6, satFat: 3.3, unsatFat: 6.3, transFat: 0,
+    carbs: 1.1, fiber: 0, sugars: 1.1, netCarbs: 1.1, sodium: 124, potassium: 126, cholesterol: 373, calcium: 50, iron: 1.2
+  },
+  {
+    name: "Egg Whites (Cooked)",
+    cal: 52, protein: 10.9, fat: 0.2, satFat: 0.0, unsatFat: 0.1, transFat: 0,
+    carbs: 0.7, fiber: 0, sugars: 0.7, netCarbs: 0.7, sodium: 166, potassium: 163, cholesterol: 0, calcium: 7, iron: 0.1
+  },
+  {
+    name: "Greek Yogurt (Plain, Non-Fat)",
+    cal: 59, protein: 10.0, fat: 0.4, satFat: 0.1, unsatFat: 0.2, transFat: 0,
+    carbs: 3.6, fiber: 0, sugars: 3.2, netCarbs: 3.6, sodium: 36, potassium: 141, cholesterol: 5, calcium: 110, iron: 0.1
+  },
+  {
+    name: "Cottage Cheese (Low Fat 2%)",
+    cal: 82, protein: 11.0, fat: 2.3, satFat: 1.4, unsatFat: 0.8, transFat: 0,
+    carbs: 3.4, fiber: 0, sugars: 2.7, netCarbs: 3.4, sodium: 330, potassium: 104, cholesterol: 9, calcium: 83, iron: 0.1
+  },
+  {
+    name: "Tuna (Canned in Water, Drained)",
+    cal: 116, protein: 25.5, fat: 1.0, satFat: 0.2, unsatFat: 0.6, transFat: 0,
+    carbs: 0.0, fiber: 0, sugars: 0.0, netCarbs: 0.0, sodium: 338, potassium: 237, cholesterol: 30, calcium: 11, iron: 1.0
+  },
+  {
+    name: "Salmon (Cooked, Baked)",
+    cal: 206, protein: 22.0, fat: 12.3, satFat: 2.5, unsatFat: 8.6, transFat: 0,
+    carbs: 0.0, fiber: 0, sugars: 0.0, netCarbs: 0.0, sodium: 61, potassium: 384, cholesterol: 63, calcium: 12, iron: 0.8
+  },
+  {
+    name: "Firm Tofu",
+    cal: 83, protein: 10.0, fat: 5.3, satFat: 0.8, unsatFat: 4.1, transFat: 0,
+    carbs: 1.9, fiber: 0.9, sugars: 0.5, netCarbs: 1.0, sodium: 14, potassium: 121, cholesterol: 0, calcium: 282, iron: 2.7
+  },
+  {
+    name: "Lentils (Cooked, Boiled)",
+    cal: 116, protein: 9.0, fat: 0.4, satFat: 0.1, unsatFat: 0.2, transFat: 0,
+    carbs: 20.0, fiber: 7.9, sugars: 1.8, netCarbs: 12.1, sodium: 2, potassium: 369, cholesterol: 0, calcium: 19, iron: 3.3
+  },
+  {
+    name: "Whey Protein Isolate Powder",
+    cal: 370, protein: 80.0, fat: 2.0, satFat: 1.0, unsatFat: 0.8, transFat: 0,
+    carbs: 3.0, fiber: 0, sugars: 1.5, netCarbs: 3.0, sodium: 170, potassium: 420, cholesterol: 10, calcium: 450, iron: 0.5
   }
 ];
 
@@ -1047,3 +1097,76 @@ function loadFromLocalStorage() {
     } catch (e) {}
   }
 }
+// Combiner State Variable
+let selectedCombinerIds = new Set();
+
+// Add inside setupEventListeners()
+document.getElementById('clear-combiner-btn')?.addEventListener('click', clearCombinerSelection);
+
+// Function to Render Item List in Combiner Card
+function renderCombinerItems() {
+  const container = document.getElementById('combiner-items-list');
+  if (!container) return;
+
+  if (loggedItems.length === 0) {
+    container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 12px;">Log food items above to combine them.</p>`;
+    calculateCombinerTotals();
+    return;
+  }
+
+  container.innerHTML = loggedItems.map(item => `
+    <label class="combiner-item-row">
+      <input type="checkbox" 
+             value="${item.id}" 
+             ${selectedCombinerIds.has(item.id) ? 'checked' : ''} 
+             onchange="toggleCombinerItem(${item.id})">
+      <div class="combiner-item-info">
+        <span><strong>${item.name}</strong> (${item.weightEntered}${item.unit})</span>
+        <span>${item.cal} kcal</span>
+      </div>
+    </label>
+  `).join('');
+
+  calculateCombinerTotals();
+}
+
+// Toggle selection state
+function toggleCombinerItem(id) {
+  if (selectedCombinerIds.has(id)) {
+    selectedCombinerIds.delete(id);
+  } else {
+    selectedCombinerIds.add(id);
+  }
+  calculateCombinerTotals();
+}
+
+// Calculate combined totals
+function calculateCombinerTotals() {
+  const selectedItems = loggedItems.filter(item => selectedCombinerIds.has(item.id));
+
+  const totals = selectedItems.reduce((acc, curr) => ({
+    cal: acc.cal + curr.cal,
+    protein: acc.protein + curr.protein,
+    carbs: acc.carbs + curr.carbs,
+    fat: acc.fat + curr.fat,
+    fiber: acc.fiber + curr.fiber
+  }), { cal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
+
+  document.getElementById('combine-cal').innerHTML = `${totals.cal.toLocaleString()} <small>kcal</small>`;
+  document.getElementById('combine-protein').innerHTML = `${totals.protein.toFixed(1)} <small>g</small>`;
+  document.getElementById('combine-carbs').innerHTML = `${totals.carbs.toFixed(1)} <small>g</small>`;
+  document.getElementById('combine-fat').innerHTML = `${totals.fat.toFixed(1)} <small>g</small>`;
+  document.getElementById('combine-fiber').innerHTML = `${totals.fiber.toFixed(1)} <small>g</small>`;
+}
+
+// Reset Combiner Selection
+function clearCombinerSelection() {
+  selectedCombinerIds.clear();
+  renderCombinerItems();
+}
+
+// Ensure renderCombinerItems() is called inside your existing rendering/logging functions:
+// 1. Inside DOMContentLoaded
+// 2. Inside logItem()
+// 3. Inside deleteItem()
+// 4. Inside clearAllLog()

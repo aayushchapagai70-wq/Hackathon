@@ -40,7 +40,7 @@
     <!-- NEW FEATURE: Personal Calorie & Macro Target Calculator Card -->
     <section id="profile-card" class="card profile-card">
       <div class="card-header-flex">
-        <h2 class="section-title"><i class="fa-solid fa-calculator"></i> Personal Goal Calculator (Mifflin-St Jeor)</h2>
+        <h2 class="section-title"><i class="fa-solid fa-calculator"></i> Personal Goal Calculator </h2>
         <span id="target-mode-badge" class="badge">Default Targets</span>
       </div>
       
@@ -237,6 +237,39 @@
         <p>No food items logged yet today. Search and add food above!</p>
       </div>
     </section>
+    <!-- NEW FEATURE: Macro Combiner Tool -->
+<section id="combiner-section" class="card combiner-card">
+  <div class="card-header-flex">
+    <h2 class="section-title"><i class="fa-solid fa-object-group"></i> Combine Food Macros</h2>
+    <button type="button" id="clear-combiner-btn" class="btn btn-secondary btn-sm">
+      <i class="fa-solid fa-arrows-rotate"></i> Reset Combiner
+    </button>
+  </div>
+  
+  <p class="combiner-subtitle">Select logged items or pick foods to view combined total macronutrients.</p>
+
+  <div class="combiner-layout">
+    <!-- Left: Food Selection -->
+    <div class="combiner-select-box">
+      <h4 class="sub-heading">Select Items to Combine</h4>
+      <div id="combiner-items-list" class="combiner-items-list">
+        <!-- Dynamically Populated List -->
+      </div>
+    </div>
+
+    <!-- Right: Combined Totals Display -->
+    <div class="combiner-result-box">
+      <h4 class="sub-heading">Combined Macronutrients</h4>
+      <div id="combiner-totals-grid" class="combiner-totals-grid">
+        <div class="combine-stat"><span class="stat-label">Calories</span><span class="stat-value" id="combine-cal">0 <small>kcal</small></span></div>
+        <div class="combine-stat"><span class="stat-label">Protein</span><span class="stat-value" id="combine-protein">0 <small>g</small></span></div>
+        <div class="combine-stat"><span class="stat-label">Carbs</span><span class="stat-value" id="combine-carbs">0 <small>g</small></span></div>
+        <div class="combine-stat"><span class="stat-label">Fat</span><span class="stat-value" id="combine-fat">0 <small>g</small></span></div>
+        <div class="combine-stat"><span class="stat-label">Fiber</span><span class="stat-value" id="combine-fiber">0 <small>g</small></span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
   </main>
 
