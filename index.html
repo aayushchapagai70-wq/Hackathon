@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriPulse - Food & Macronutrient Tracker</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo">
+        <i class="fa-solid fa-apple-whole logo-icon"></i>
+        <span>NutriPulse</span>
+      </div>
+      <div class="header-actions">
+        <button id="open-calculator-btn" class="btn btn-secondary">
+          <i class="fa-solid fa-sliders"></i> Calculate My Targets
+        </button>
+        <button id="export-btn" class="btn btn-secondary">
+          <i class="fa-solid fa-download"></i> Export Clean CSV
+        </button>
+        <button id="clear-all-btn" class="btn btn-danger-outline">
+          <i class="fa-solid fa-trash"></i> Clear Day
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="main-container">
+
+    <!-- NEW FEATURE: Personal Calorie & Macro Target Calculator Card -->
+    <section id="profile-card" class="card profile-card">
+      <div class="card-header-flex">
+        <h2 class="section-title"><i class="fa-solid fa-calculator"></i> Personal Goal Calculator (Mifflin-St Jeor)</h2>
+        <span id="target-mode-badge" class="badge">Default Targets</span>
+      </div>
+      
+      <form id="calculator-form" class="calculator-grid">
+        <div class="form-group">
+          <label for="calc-age">Age (yrs)</label>
+          <input type="number" id="calc-age" placeholder="25" min="10" max="120" required>
+        </div>
+
+        <div class="form-group">
+          <label for="calc-gender">Gender</label>
+          <select id="calc-gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="calc-weight">Weight (kg)</label>
+          <input type="number" id="calc-weight" placeholder="70" min="20" max="300" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="calc-height">Height (cm)</label>
+          <input type="number" id="calc-height" placeholder="175" min="80" max="250" required>
+        </div>
+
+        <div class="form-group">
+          <label for="calc-activity">Activity Level</label>
+          <select id="calc-activity">
+            <option value="1.2">Sedentary (Little/no exercise)</option>
+            <option value="1.375" selected>Lightly Active (1-3 days/wk)</option>
+            <option value="1.55">Moderately Active (3-5 days/wk)</option>
+            <option value="1.725">Very Active (6-7 days/wk)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="calc-goal">Primary Goal</label>
+          <select id="calc-goal">
+            <option value="maintain" selected>Maintain Weight</option>
+            <option value="lose">Weight Loss (-15% Cal)</option>
+            <option value="gain">Muscle Gain (+15% Cal)</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width-btn">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Calculate & Set Personal Goals
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Daily Summary Dashboard Header -->
+    <section class="dashboard-card">
+      <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Daily Macro Summary</h2>
+      
+      <div class="macro-grid">
+        <!-- Calories -->
+        <div class="macro-card cal-card">
+          <div class="macro-info">
+            <span class="macro-label">Total Calories</span>
+            <span class="macro-value" id="summary-cal">0 <small>kcal</small></span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill cal-fill" id="cal-progress" style="width: 0%;"></div>
+          </div>
+          <span class="goal-subtext" id="target-text-cal">Target: 2,000 kcal</span>
+        </div>
+
+        <!-- Protein -->
+        <div class="macro-card protein-card">
+          <div class="macro-info">
+            <span class="macro-label">Protein</span>
+            <span class="macro-value" id="summary-protein">0 <small>g</small></span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill protein-fill" id="protein-progress" style="width: 0%;"></div>
+          </div>
+          <span class="goal-subtext" id="target-text-protein">Target: 150g</span>
+        </div>
+
+        <!-- Carbs -->
+        <div class="macro-card carbs-card">
+          <div class="macro-info">
+            <span class="macro-label">Carbohydrates</span>
+            <span class="macro-value" id="summary-carbs">0 <small>g</small></span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill carbs-fill" id="carbs-progress" style="width: 0%;"></div>
+          </div>
+          <span class="goal-subtext" id="target-text-carbs">Target: 250g</span>
+        </div>
+
+        <!-- Fat -->
+        <div class="macro-card fat-card">
+          <div class="macro-info">
+            <span class="macro-label">Total Fat</span>
+            <span class="macro-value" id="summary-fat">0 <small>g</small></span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill fat-fill" id="fat-progress" style="width: 0%;"></div>
+          </div>
+          <span class="goal-subtext" id="target-text-fat">Target: 65g</span>
+        </div>
+
+        <!-- Fiber -->
+        <div class="macro-card fiber-card">
+          <div class="macro-info">
+            <span class="macro-label">Dietary Fiber</span>
+            <span class="macro-value" id="summary-fiber">0 <small>g</small></span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill fiber-fill" id="fiber-progress" style="width: 0%;"></div>
+          </div>
+          <span class="goal-subtext" id="target-text-fiber">Target: 30g</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Food Input Control Section -->
+    <section class="card input-card">
+      <h2 class="section-title"><i class="fa-solid fa-plus-circle"></i> Log Food Item</h2>
+      <form id="food-form" class="food-form">
+        <div class="form-group search-group">
+          <label for="food-input">Search Food Name</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-magnifying-glass input-icon"></i>
+            <input type="text" id="food-input" placeholder="e.g., Chicken Breast, Banana, Oats..." autocomplete="off" required>
+          </div>
+          <div id="suggestions-box" class="suggestions-dropdown hidden"></div>
+        </div>
+
+        <div class="form-group quantity-group">
+          <label for="weight-input">Weight / Quantity</label>
+          <div class="input-unit-wrapper">
+            <input type="number" id="weight-input" min="1" max="5000" value="100" required>
+            <select id="unit-select" class="unit-select">
+              <option value="g">g (grams)</option>
+              <option value="oz">oz (ounces)</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" id="calculate-btn" class="btn btn-primary">
+          <i class="fa-solid fa-calculator"></i> Calculate & Log Food
+        </button>
+      </form>
+    </section>
+
+    <!-- Dynamic Preview Card (15 Nutrients) -->
+    <section id="preview-section" class="card preview-card hidden">
+      <div class="preview-header">
+        <div>
+          <h3 id="preview-title">Chicken Breast</h3>
+          <span id="preview-portion" class="portion-badge">100g serving</span>
+        </div>
+        <button type="button" id="log-preview-btn" class="btn btn-success">
+          <i class="fa-solid fa-plus"></i> Add to Log
+        </button>
+      </div>
+
+      <h4 class="sub-heading">Nutrient Breakdown (15 Metrics)</h4>
+      <div id="nutrient-grid" class="nutrient-grid"></div>
+    </section>
+
+    <!-- Daily Food Log List -->
+    <section class="card log-card">
+      <div class="log-header">
+        <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Today's Food Log</h2>
+        <span id="log-count-badge" class="count-badge">0 Items</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Weight</th>
+              <th>Calories</th>
+              <th>Protein</th>
+              <th>Fat</th>
+              <th>Carbs</th>
+              <th>Fiber</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="log-table-body"></tbody>
+        </table>
+      </div>
+      <div id="empty-state" class="empty-state">
+        <i class="fa-solid fa-utensils empty-icon"></i>
+        <p>No food items logged yet today. Search and add food above!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Detailed 15-Nutrient Modal -->
+  <div id="nutrient-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Food Details</h3>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div id="modal-content" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
