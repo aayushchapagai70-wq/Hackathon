@@ -625,6 +625,11 @@ const FOOD_DATABASE = [
     name: "Whey Protein Isolate Powder",
     cal: 370, protein: 80.0, fat: 2.0, satFat: 1.0, unsatFat: 0.8, transFat: 0,
     carbs: 3.0, fiber: 0, sugars: 1.5, netCarbs: 3.0, sodium: 170, potassium: 420, cholesterol: 10, calcium: 450, iron: 0.5
+  },
+  {
+    name: "Peanut Butter (Smooth / Whole Nut)",
+    cal: 588, protein: 25.0, fat: 50.0, satFat: 10.0, unsatFat: 40.0, transFat: 0,
+    carbs: 20.0, fiber: 6.0, sugars: 9.0, netCarbs: 14.0, sodium: 17, potassium: 649, cholesterol: 0, calcium: 43, iron: 1.9
   }
 ];
 
